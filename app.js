@@ -4,8 +4,6 @@
  */
 
 var express = require('express')
-  , signUp = require('./routes/signUp')
-  , logIn = require('./routes/logIn')
   , http = require('http')
   , path = require('path') 
   , favicon = require('static-favicon')
@@ -14,6 +12,10 @@ var express = require('express')
   , bodyParser = require('body-parser')
   , mongo = require("./routes/mongodb")
   , ejs=require('ejs');
+
+//Requiring the folders for routes
+var firstPage= require('./routes/firstPage');
+
 
 //URL for the sessions collections in mongoDB
 var mongoSessionConnectURL = "mongodb://cmpeUser:cmpe273@aws-us-east-1-portal.16.dblayer.com:10187/amazonDB";
@@ -50,7 +52,12 @@ app.use(expressSession({
 }));
 
 /**Handling Routing and Delegating Calls**/
-app.get('/', logIn.goToLogInPage);
+//app.get('/', logIn.goToLogInPage);
+
+/**Routing to the first page which asks the user his zip code**/
+app.get('/firstPage', firstPage.firstPage);
+
+
 
 /** Error Handling **/
 app.use(function(req, res, next) {
@@ -67,7 +74,7 @@ if (app.get('env') === 'development') {
         });
     });
 }
-
+app.get('/firstPage', firstPage.firstPage);
 app.use(function(err, req, res, next) {
     res.render('error', {
         message: err.message,
